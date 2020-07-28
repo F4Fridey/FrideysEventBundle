@@ -35,7 +35,7 @@ namespace FrideysEventBundle
 			}
 			catch
 			{
-				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle" };
+				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle\ndclassinvasion" };
 			}
 			if (plugin.currentEvent == "none")
 			{
@@ -174,7 +174,7 @@ namespace FrideysEventBundle
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>3 or more players are required for this event.</color>" };
 								}
 							case "dclassbattle":
-								if (GetPlayers().Count >= 3)
+								if (GetPlayers().Count >= 5)
 								{
 									plugin.Round.RoundLock = true;
 									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
@@ -239,6 +239,90 @@ namespace FrideysEventBundle
 								{
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>5 or more players are required for this event.</color>" };
 								}
+							case "dclassinvasion":
+								if (GetPlayers().Count >= 4)
+								{
+									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
+									foreach (Smod2.API.Door door in doors)
+									{
+										if (door.Name == "ESCAPE_INNER")
+										{
+											door.Open = false;
+											door.Locked = true;
+										}
+										if (door.Name == "SURFACE_GATE")
+										{
+											door.Open = false;
+										}
+									}
+									plugin.Round.RoundLock = true;
+									List<Elevator> lifts = plugin.Server.Map.GetElevators();
+									foreach (Elevator lift in lifts)
+									{
+										try { lift.Locked = true; }
+										catch { plugin.Debug(lift.ToString() + " is not lockable."); }
+									}
+									if (GetPlayers().Count < 7)
+									{
+										List<Player> players = GetPlayers();
+										DCIspawnAllAsSpec(players);
+										System.Random rnd = new System.Random();
+										int ntf1 = rnd.Next(0, players.Count);
+										players[ntf1].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										ClearPlayerInventory(players[ntf1]);
+										DCIGiveItems(players[ntf1], 0);
+										players[ntf1].SetHealth(5000);
+										DCIspawnDClass(players);
+									}
+									else if (7 <= GetPlayers().Count && GetPlayers().Count < 13)
+									{
+										List<Player> players = GetPlayers();
+										DCIspawnAllAsSpec(players);
+										System.Random rnd = new System.Random();
+										int ntf1 = rnd.Next(0, 7);
+										int ntf2 = rnd.Next(7, 13);
+										players[ntf1].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										players[ntf2].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										ClearPlayerInventory(players[ntf1]);
+										ClearPlayerInventory(players[ntf2]);
+										DCIGiveItems(players[ntf1], 0);
+										DCIGiveItems(players[ntf2], 0);
+										players[ntf1].SetHealth(5000);
+										players[ntf2].SetHealth(5000);
+										DCIspawnDClass(players);
+									}
+									else
+									{
+										List<Player> players = GetPlayers();
+										DCIspawnAllAsSpec(players);
+										System.Random rnd = new System.Random();
+										int ntf1 = rnd.Next(0, 7);
+										int ntf2 = rnd.Next(7, 13);
+										int ntf3 = rnd.Next(13, players.Count);
+										players[ntf1].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										players[ntf2].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										players[ntf3].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
+										ClearPlayerInventory(players[ntf1]);
+										ClearPlayerInventory(players[ntf2]);
+										ClearPlayerInventory(players[ntf3]);
+										DCIGiveItems(players[ntf1], 0);
+										DCIGiveItems(players[ntf2], 0);
+										DCIGiveItems(players[ntf3], 0);
+										players[ntf1].SetHealth(5000);
+										players[ntf2].SetHealth(5000);
+										players[ntf3].SetHealth(5000);
+										DCIspawnDClass(players);
+									}
+									plugin.time = 600;
+									plugin.inbetweenTime = 120f;
+									plugin.currentEvent = "dclassinvasion";
+									string str = "<color=#00FF00>Executing event: </color><color=#99FF99>" + args[1] + "</color>";
+									return new string[] { str };
+								}
+								else
+								{
+									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>4 or more players are required for this event.</color>" };
+								}
 						}
 				}
 			}
@@ -265,6 +349,56 @@ namespace FrideysEventBundle
 			player.SetAmmo(AmmoType.AMMO556, 200);
 			player.SetAmmo(AmmoType.AMMO762, 200);
 			player.SetAmmo(AmmoType.AMMO9MM, 200);
+		}
+
+		void DCIGiveItems(Player player, int playerClass/*1=dboi|0=ntf*/)
+		{
+			switch (playerClass)
+			{
+				default:
+					player.GiveItem(Smod2.API.ItemType.GUN_MP7);
+					player.GiveItem(Smod2.API.ItemType.GUN_PROJECT90);
+					player.GiveItem(Smod2.API.ItemType.GUN_USP);
+					player.GiveItem(Smod2.API.ItemType.E11_STANDARD_RIFLE);
+					player.GiveItem(Smod2.API.ItemType.COM15);
+					player.SetAmmo(AmmoType.AMMO556, 200);
+					player.SetAmmo(AmmoType.AMMO762, 200);
+					player.SetAmmo(AmmoType.AMMO9MM, 200);
+					player.PersonalBroadcast(15, "You have 5000 HP, survive for 10 minutes.", false);
+					break;
+				case 1:
+					player.GiveItem(Smod2.API.ItemType.COM15);
+					player.SetAmmo(AmmoType.AMMO9MM, 100);
+					player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have 10 minutes", false);
+					break;
+			}
+			
+		}
+
+		void DCIrandomTeleport(Player player)
+		{
+			player.Teleport(new Vector(-11, 1002, -43));
+		}
+
+		void DCIspawnDClass(List<Player> players)
+		{
+			foreach (Player player in players)
+			{
+				if (player.TeamRole.Role != Smod2.API.RoleType.NTF_COMMANDER)
+				{
+					player.ChangeRole(Smod2.API.RoleType.CLASSD, true, false);
+					DCIGiveItems(player, 1);
+					DCIrandomTeleport(player);
+				}
+			}
+		}
+
+		void DCIspawnAllAsSpec(List<Player> players)
+		{
+			foreach (Player player in players)
+			{
+				player.ChangeRole(Smod2.API.RoleType.SPECTATOR);
+			}
 		}
 
 		void DCBtrySpawnItems(System.Random rnd, Smod2.API.Door door)
