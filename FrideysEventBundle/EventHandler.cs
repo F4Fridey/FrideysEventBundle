@@ -33,15 +33,24 @@ namespace FrideysEventBundle
 					break;
 				case "chaosvsntf":
 					ev.Player.OverwatchMode = true;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
 					break;
 				case "chaosvsntfENDING":
 					ev.Player.OverwatchMode = true;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
 					break;
 				case "peanutpocalypse":
 					ev.Player.OverwatchMode = true;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
 					break;
 				case "dclassbattle":
 					ev.Player.OverwatchMode = true;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
+					break;
+				case "dclassinvasion":
+					ev.Player.OverwatchMode = true;
+					float timeLeft = plugin.time - timer;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating. Event will end in " + timeLeft.ToString("0.0") + " minutes.", false);
 					break;
 			}
 		}
@@ -68,12 +77,14 @@ namespace FrideysEventBundle
 				case "dclassbattle":
 					ev.Player.OverwatchMode = true;
 					break;
+				case "dclassinvasion":
+					break;
 			}
 		}
 
 		public void OnRoundEnd(RoundEndEvent ev)
 		{
-			if (plugin.currentEvent == "chaosvsntf" || plugin.currentEvent == "chaosvsntfENDING" || plugin.currentEvent == "peanutpocalypse")
+			if (plugin.currentEvent == "chaosvsntf" || plugin.currentEvent == "chaosvsntfENDING" || plugin.currentEvent == "peanutpocalypse" || plugin.currentEvent == "dclassinvasion")
 			{
 				foreach (Player player in GetPlayers())
 				{
@@ -87,6 +98,9 @@ namespace FrideysEventBundle
 			plugin.currentEvent = "blocked";
 			inbetweenTimerActivated = false;
 			winCondition = false;
+			timer = 0;
+			inbetweenTimer = 0;
+			secondTimer = 0;
 		}
 
 		public void OnRoundStart(RoundStartEvent ev)
@@ -100,6 +114,7 @@ namespace FrideysEventBundle
 		}
 
 		float timer;
+		float inbetweenTimer;
 		float secondTimer;
 
 		bool inbetweenTimerActivated = false;
@@ -116,6 +131,7 @@ namespace FrideysEventBundle
 				if (timer < plugin.time)
 				{
 					timer += Time.deltaTime;
+					inbetweenTimer += Time.deltaTime;
 				}
 				else
 				{
@@ -156,10 +172,19 @@ namespace FrideysEventBundle
 								plugin.currentEvent = "chaosvsntfENDING";
 							}
 							break;
+						case "dclassinvasion":
+							winCondition = true;
+							foreach (Player player in GetPlayers())
+							{
+								player.ChangeRole(Smod2.API.RoleType.TUTORIAL, true, false);
+							}
+							plugin.Server.Map.Broadcast(10, "<color=#0000ff>NTF win!</color>", false);
+							plugin.Round.RoundLock = false;
+							break;
 					}
 				}
 
-				if (timer > plugin.inbetweenTime && !inbetweenTimerActivated)
+				if (inbetweenTimer > plugin.inbetweenTime && !inbetweenTimerActivated)
 				{
 					switch (plugin.currentEvent)
 					{
@@ -171,9 +196,26 @@ namespace FrideysEventBundle
 								player.SetGodmode(false);
 								player.PersonalBroadcast(5, "<color=#ff0000>Invincibility Over. Last man standing wins!</color>", false);
 							}
+							inbetweenTimerActivated = true;
+							break;
+						case "dclassinvasion":
+							inbetweenTimer = 0;
+							Vector vec = new Vector(182.3f, 994, -59.3f);
+							Vector rot = new Vector(0, 0, 0);
+							for (int i = 0; i < 5; i++)
+							{
+								plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO556, vec, rot);
+								plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO762, vec, rot);
+								plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO9MM, vec, rot);
+							}
+							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FRAG_GRENADE, vec, rot);
+							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FRAG_GRENADE, vec, rot);
+							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, vec, rot);
+							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, vec, rot);
+							plugin.Server.Map.Broadcast(10, "Supplies at helicopter dropoff!", false);
 							break;
 					}
-					inbetweenTimerActivated = true;
+					
 				}
 
 				if (secondTimer < 1)
@@ -222,6 +264,29 @@ namespace FrideysEventBundle
 								}
 							}
 							break;
+						case "dclassinvasion":
+							if (!winCondition)
+							{
+								int ntfLeft = 0;
+								foreach (Player player in GetPlayers())
+								{
+									if (player.TeamRole.Role == Smod2.API.RoleType.NTF_COMMANDER)
+									{
+										ntfLeft += 1;
+									}
+									if (player.TeamRole.Role == Smod2.API.RoleType.SPECTATOR && player.OverwatchMode == false)
+									{
+										DCIrespawnDClass(player);
+									}
+								}
+								if (ntfLeft < 1)
+								{
+									winCondition = true;
+									plugin.Server.Map.Broadcast(10, "<color=#00ff00>Class Ds win!</color>", false);
+									plugin.Round.RoundLock = false;
+								}
+							}
+							break;
 					}
 					secondTimer = 0;
 				}
@@ -257,6 +322,28 @@ namespace FrideysEventBundle
 		void CVNoverwatchSpectators(Player player)
 		{
 			player.OverwatchMode = true;
+		}
+
+		void DCIrespawnDClass(Player player)
+		{
+			player.ChangeRole(Smod2.API.RoleType.CLASSD, true, false);
+			System.Random rnd = new System.Random();
+			int place = rnd.Next(0, 2);
+			switch (place)
+			{
+				default:
+					player.Teleport(new Vector(-11, 1002, -43));
+					break;
+				case 1:
+					player.Teleport(new Vector(-11, 1002, -43));
+					break;
+				case 0:
+					player.Teleport(new Vector(10.6f, 989, -48.6f));
+					break;
+			}
+			player.GiveItem(Smod2.API.ItemType.COM15);
+			player.SetAmmo(AmmoType.AMMO9MM, 100);
+			player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have 10 minutes", false);
 		}
 	}
 }
