@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace FrideysEventBundle
 {
-    class EventHandler : IEventHandlerFixedUpdate, IEventHandlerDoorAccess, IEventHandlerPlayerDie, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerRoundStart
+    class EventHandler : IEventHandlerFixedUpdate, IEventHandlerDoorAccess, IEventHandlerPlayerDie, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerRoundStart, IEventHandlerPlayerJoin
     {
 		private readonly FrideysEventBundle plugin;
 
@@ -22,7 +22,28 @@ namespace FrideysEventBundle
 
 		public void OnDoorAccess(PlayerDoorAccessEvent ev)
 		{
-			//plugin.Info(ev.Door.Name);
+			//plugin.Info(ev.Door.Name + ev.Door.Position.ToString());
+		}
+
+		public void OnPlayerJoin(PlayerJoinEvent ev)
+		{
+			switch (plugin.currentEvent)
+			{
+				default:
+					break;
+				case "chaosvsntf":
+					ev.Player.OverwatchMode = true;
+					break;
+				case "chaosvsntfENDING":
+					ev.Player.OverwatchMode = true;
+					break;
+				case "peanutpocalypse":
+					ev.Player.OverwatchMode = true;
+					break;
+				case "dclassbattle":
+					ev.Player.OverwatchMode = true;
+					break;
+			}
 		}
 
 		public void OnPlayerDie(PlayerDeathEvent ev)
@@ -44,6 +65,9 @@ namespace FrideysEventBundle
 						ev.Player.OverwatchMode = true;
 					}
 					break;
+				case "dclassbattle":
+					ev.Player.OverwatchMode = true;
+					break;
 			}
 		}
 
@@ -61,6 +85,8 @@ namespace FrideysEventBundle
 		public void OnRoundRestart(RoundRestartEvent ev)
 		{
 			plugin.currentEvent = "blocked";
+			inbetweenTimerActivated = false;
+			winCondition = false;
 		}
 
 		public void OnRoundStart(RoundStartEvent ev)
@@ -75,6 +101,9 @@ namespace FrideysEventBundle
 
 		float timer;
 		float secondTimer;
+
+		bool inbetweenTimerActivated = false;
+		bool winCondition = false;
 
 		public void OnFixedUpdate(FixedUpdateEvent ev)
 		{
@@ -101,15 +130,52 @@ namespace FrideysEventBundle
 							List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
 							foreach (Smod2.API.Door door in doors)
 							{
-								if (door.Name == "NUKE_ARMORY" || door.Name == "LCZ_ARMORY" || door.Name == "914" || door.Name == "HCZ_ARMORY" || door.Name == "096" || door.Name == "106_BOTTOM" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "079_FIRST" || door.Name == "079_SECOND" || door.Name == "049_ARMORY" || door.Name == "012")
+								if (door.Name == "GATE_A" || door.Name == "GATE_B" || door.Name == "NUKE_ARMORY" || door.Name == "LCZ_ARMORY" || door.Name == "914" || door.Name == "HCZ_ARMORY" || door.Name == "096" || door.Name == "106_BOTTOM" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "079_FIRST" || door.Name == "079_SECOND" || door.Name == "049_ARMORY" || door.Name == "012")
 								{
 									door.Open = true;
 									door.Locked = true;
 								}
 							}
+							plugin.Server.Map.Broadcast(10, "<color=#00ff00>GATE A and B now open, get your MICROs!</color>", false);
+							break;
+						case "dclassbattle":
+							if (winCondition)
+							{
+								plugin.Round.RoundLock = false;
+							}
+							else
+							{
+								foreach (Player player in GetPlayers())
+								{
+									if (player.TeamRole.Team == Smod2.API.TeamType.CLASSD)
+									{
+										player.Teleport(new Vector(-11.5f, 1002, -20.3f));
+									}
+									player.PersonalBroadcast(3, "<color=#FF0000>Sudden death!</color>", false);
+								}
+								plugin.currentEvent = "chaosvsntfENDING";
+							}
 							break;
 					}
 				}
+
+				if (timer > plugin.inbetweenTime && !inbetweenTimerActivated)
+				{
+					switch (plugin.currentEvent)
+					{
+						default:
+							break;
+						case "dclassbattle":
+							foreach (Player player in GetPlayers())
+							{
+								player.SetGodmode(false);
+								player.PersonalBroadcast(5, "<color=#ff0000>Invincibility Over. Last man standing wins!</color>", false);
+							}
+							break;
+					}
+					inbetweenTimerActivated = true;
+				}
+
 				if (secondTimer < 1)
 				{
 					secondTimer += Time.deltaTime;
@@ -131,7 +197,33 @@ namespace FrideysEventBundle
 								}
 							}
 							break;
+						case "dclassbattle":
+							if (!winCondition)
+							{
+								int dclassLeft = 0;
+								foreach (Player player in GetPlayers())
+								{
+									if (player.TeamRole.Role == Smod2.API.RoleType.CLASSD)
+									{
+										dclassLeft += 1;
+									}
+								}
+								if (dclassLeft < 2)
+								{
+									winCondition = true;
+									plugin.time = 5f;
+									timer = 0;
+									string lastPlayerName = "no one";
+									foreach (Player player in GetPlayers())
+									{
+										if (player.TeamRole.Role == Smod2.API.RoleType.CLASSD) { lastPlayerName = player.Name; }
+									}
+									plugin.Server.Map.Broadcast(10, "<color=#00ff00>Congratulations to " + lastPlayerName + ", the last man standing!</color>", false);
+								}
+							}
+							break;
 					}
+					secondTimer = 0;
 				}
 			}
 		}

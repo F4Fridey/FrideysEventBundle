@@ -35,7 +35,7 @@ namespace FrideysEventBundle
 			}
 			catch
 			{
-				return new string[] { "\n|| <color=#04FF00>Frideys</color> <color=#029700>Event</color> <color=#04FF00>Bundle</color> ||\n<color=#7BFFF1>Main command:</color> feb event <event> <color=#7BFFF1>- Execute and event.</color>\n<color=#04FF00>Events:</color>\n<color=#A8FFA6>chaosvsntf\npeanutpocalypse</color>" };
+				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle" };
 			}
 			if (plugin.currentEvent == "none")
 			{
@@ -103,7 +103,7 @@ namespace FrideysEventBundle
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>2 or more players are required for this event.</color>" };
 								}
 							case "peanutpocalypse":
-								if (GetPlayers().Count >= 3)
+								if (GetPlayers().Count >= 2)
 								{
 									List<Elevator> lifts = plugin.Server.Map.GetElevators();
 									foreach (Elevator lift in lifts)
@@ -128,7 +128,7 @@ namespace FrideysEventBundle
 												break;
 											}
 										}
-									}
+									}/*
 									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
 									foreach (Smod2.API.Door door in doors)
 									{
@@ -145,7 +145,7 @@ namespace FrideysEventBundle
 												door.Locked = true;
 												break;
 										}
-									}
+									}*/
 									List<Player> players = GetPlayers();
 									for (int i = 0; i < players.Count; i++)
 									{
@@ -157,7 +157,7 @@ namespace FrideysEventBundle
 												break;
 											default:
 												players[i].ChangeRole(Smod2.API.RoleType.CLASSD);
-												players[i].GiveItem(Smod2.API.ItemType.KEYCARD_SCIENTIST);
+												players[i].GiveItem(Smod2.API.ItemType.KEYCARD_ZONE_MANAGER);
 												players[i].PersonalBroadcast(10, "<color=#FF8383>You have a keycard, so go to the </color><color=#FF0000>Opened Gates </color><color=#FF8383>to get Micro-HIDs and kill the peanuts! </color>", false);
 												players[i].PersonalBroadcast(5, "<color=#FF0000>Dont die or you'll become one!</color>", false);
 												break;
@@ -172,6 +172,72 @@ namespace FrideysEventBundle
 								else
 								{
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>3 or more players are required for this event.</color>" };
+								}
+							case "dclassbattle":
+								if (GetPlayers().Count >= 3)
+								{
+									plugin.Round.RoundLock = true;
+									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
+									foreach (Smod2.API.Door door in doors)
+									{
+										if (-100 < door.Position.y && door.Position.y < 100)
+										{
+											System.Random rnd = new System.Random();
+											DCBtrySpawnItems(rnd, door);
+											DCBtrySpawnItems(rnd, door);
+											int chanceWhatAmmo = rnd.Next(0, 5);
+											switch (chanceWhatAmmo)
+											{
+												default:
+													break;
+												case 0:
+													plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO556, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+													break;
+												case 1:
+													plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO762, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+													break;
+												case 2:
+													plugin.Server.Map.SpawnItem(Smod2.API.ItemType.AMMO9MM, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+													break;
+											}
+											if (door.Name == "SURFACE_GATE" || door.Name == "914" || door.Name == "CHECKPOINT_LCZ_A" || door.Name == "CHECKPOINT_LCZ_B")
+											{
+												door.Open = false;
+												door.Locked = true;
+											}
+											else
+											{
+												door.Open = false;
+											}
+										}else if (door.Name == "SURFACE_GATE")
+										{
+											door.Open = false;
+											door.Locked = true;
+										}
+									}
+									foreach (Player player in GetPlayers())
+									{
+										player.ChangeRole(Smod2.API.RoleType.CLASSD);
+										player.PersonalBroadcast(170, "<color=#00ff00>Battle Royal! Find weapons and items to fight till the last man standing! You are invincible for 3 minutes.</color>", false);
+										player.PersonalBroadcast(6, "<color=#ff0000>Sudden death in 7 minutes, you wont be warned!</color>", false);
+										player.SetGodmode(true);
+									}
+									List<Elevator> lifts = plugin.Server.Map.GetElevators();
+									foreach (Elevator lift in lifts)
+									{
+										try { lift.Locked = true; }
+										catch { plugin.Debug(lift.ToString() + " is not lockable."); }
+									}
+
+									plugin.time = 600;
+									plugin.inbetweenTime = 180f;
+									plugin.currentEvent = "dclassbattle";
+									string str = "<color=#00FF00>Executing event: </color><color=#99FF99>" + args[1] + "</color>";
+									return new string[] { str };
+								}
+								else
+								{
+									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>5 or more players are required for this event.</color>" };
 								}
 						}
 				}
@@ -199,6 +265,43 @@ namespace FrideysEventBundle
 			player.SetAmmo(AmmoType.AMMO556, 200);
 			player.SetAmmo(AmmoType.AMMO762, 200);
 			player.SetAmmo(AmmoType.AMMO9MM, 200);
+		}
+
+		void DCBtrySpawnItems(System.Random rnd, Smod2.API.Door door)
+		{
+			int chanceWhatItem = rnd.Next(0, 9);
+			switch (chanceWhatItem)
+			{
+				default:
+					break;
+				case 0:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.COM15, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 1:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.MEDKIT, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 2:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.SCP500, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 3:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.SCP207, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 4:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.P90, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 5:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.USP, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 6:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.SCP018, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 7:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FRAG_GRENADE, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 8:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+			}
 		}
 
 		List<Player> GetPlayers()
