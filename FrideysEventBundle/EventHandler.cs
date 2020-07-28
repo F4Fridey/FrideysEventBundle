@@ -97,6 +97,17 @@ namespace FrideysEventBundle
 						case "chaosvsntf":
 							CVNbeginSuddenDeath();
 							break;
+						case "peanutpocalypse":
+							List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
+							foreach (Smod2.API.Door door in doors)
+							{
+								if (door.Name == "NUKE_ARMORY" || door.Name == "LCZ_ARMORY" || door.Name == "914" || door.Name == "HCZ_ARMORY" || door.Name == "096" || door.Name == "106_BOTTOM" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "079_FIRST" || door.Name == "079_SECOND" || door.Name == "049_ARMORY" || door.Name == "012")
+								{
+									door.Open = true;
+									door.Locked = true;
+								}
+							}
+							break;
 					}
 				}
 				if (secondTimer < 1)

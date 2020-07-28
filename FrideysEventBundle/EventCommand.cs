@@ -103,7 +103,7 @@ namespace FrideysEventBundle
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>2 or more players are required for this event.</color>" };
 								}
 							case "peanutpocalypse":
-								if (GetPlayers().Count >= 2)
+								if (GetPlayers().Count >= 3)
 								{
 									List<Elevator> lifts = plugin.Server.Map.GetElevators();
 									foreach (Elevator lift in lifts)
@@ -163,7 +163,7 @@ namespace FrideysEventBundle
 												break;
 										}
 									}
-
+									plugin.time = 180f;
 									plugin.Round.RoundLock = false;
 									plugin.currentEvent = "peanutpocalypse";
 									string str = "<color=#00FF00>Executing event: </color><color=#99FF99>" + args[1] + "</color>";
@@ -171,7 +171,7 @@ namespace FrideysEventBundle
 								}
 								else
 								{
-									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>4 or more players are required for this event.</color>" };
+									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>3 or more players are required for this event.</color>" };
 								}
 						}
 				}
@@ -190,7 +190,6 @@ namespace FrideysEventBundle
 
 		private void ChaosVNTFGiveItems(Player player)
 		{
-			player.GiveItem(Smod2.API.ItemType.E11_STANDARD_RIFLE);
 			player.GiveItem(Smod2.API.ItemType.GUN_MP7);
 			player.GiveItem(Smod2.API.ItemType.GUN_PROJECT90);
 			player.GiveItem(Smod2.API.ItemType.GUN_USP);
