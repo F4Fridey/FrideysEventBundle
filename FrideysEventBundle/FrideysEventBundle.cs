@@ -33,6 +33,7 @@ namespace FrideysEventBundle
 
 		public string currentEvent = "blocked";
 		public float time;
+		public float inbetweenTime;
 
 		public override void OnDisable()
 		{
