@@ -35,6 +35,8 @@ namespace FrideysEventBundle
 		public float time;
 		public float inbetweenTime;
 
+		public List<Player> tttPlayers = new List<Player>();
+
 		public override void OnDisable()
 		{
 			this.Info(this.Details.name + " was disabled ):");
