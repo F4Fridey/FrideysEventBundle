@@ -31,15 +31,15 @@ namespace FrideysEventBundle
 		{
 			try
 			{
-				plugin.Debug("Please ignore this message [" + args[0] + "]");
+				plugin.Debug("Please ignore this message [" + args[0] + "]");//to check if anything is in args[0]
 			}
-			catch
+			catch//if not the help text is sent
 			{
 				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle\ndclassinvasion\nttt" };
 			}
-			if (plugin.currentEvent == "none")
+			if (plugin.currentEvent == "none")//make sure no event is running
 			{
-				switch (args[0])
+				switch (args[0])//check what the first argument is
 				{
 					default:
 						return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>Please use a valid argument.</color>" };
