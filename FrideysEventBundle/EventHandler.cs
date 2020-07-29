@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace FrideysEventBundle
 {
-    class EventHandler : IEventHandlerFixedUpdate, IEventHandlerDoorAccess, IEventHandlerPlayerDie, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerRoundStart, IEventHandlerPlayerJoin
+    class EventHandler : IEventHandlerFixedUpdate, IEventHandlerDoorAccess, IEventHandlerPlayerDie, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerRoundStart, IEventHandlerPlayerJoin, IEventHandlerShoot, IEventHandlerPlayerLeave, IEventHandlerPlayerDropItem, IEventHandlerPlayerPickupItem
     {
 		private readonly FrideysEventBundle plugin;
 
@@ -25,8 +25,35 @@ namespace FrideysEventBundle
 			//plugin.Info(ev.Door.Name + ev.Door.Position.ToString());
 		}
 
+		public void OnPlayerDropItem(PlayerDropItemEvent ev)
+		{
+			switch (plugin.currentEvent)
+			{
+				default:
+					break;
+				case "ttt":
+					ev.Allow = false;
+					break;
+			}
+		}
+
+		public void OnPlayerPickupItem(PlayerPickupItemEvent ev)
+		{
+			switch (plugin.currentEvent)
+			{
+				default:
+					break;
+				case "ttt":
+					plugin.tttPlayers.Add(ev.Player);
+					ev.Player.SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
+					ev.Player.PersonalBroadcast(10, "<color=#ffdd00>You are the Sherif</color>\n<color=#fff199>You must kill the murderer, but beware if you kill the wrong person, youll die!</color>", false);
+					break;
+			}
+		}
+
 		public void OnPlayerJoin(PlayerJoinEvent ev)
 		{
+			float timeLeft;
 			switch (plugin.currentEvent)
 			{
 				default:
@@ -43,14 +70,42 @@ namespace FrideysEventBundle
 					ev.Player.OverwatchMode = true;
 					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
 					break;
+				case "peanutpocalypseENDING":
+					ev.Player.OverwatchMode = true;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
+					break;
 				case "dclassbattle":
 					ev.Player.OverwatchMode = true;
 					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating.", false);
 					break;
 				case "dclassinvasion":
 					ev.Player.OverwatchMode = true;
-					float timeLeft = plugin.time - timer;
+					timeLeft = (plugin.time - timer) / 60;
 					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating. Event will end in " + timeLeft.ToString("0.0") + " minutes.", false);
+					break;
+				case "ttt":
+					ev.Player.OverwatchMode = true;
+					timeLeft = (plugin.time - timer) / 60;
+					ev.Player.PersonalBroadcast(20, "And event is currently underway and you are spectating. Event will end in " + timeLeft.ToString("0.0") + " minutes.", false);
+					break;
+			}
+		}
+
+		public void OnPlayerLeave(PlayerLeaveEvent ev)
+		{
+			switch (plugin.currentEvent)
+			{
+				default:
+					break;
+				case "ttt":
+					if (ev.Player.UserId == plugin.tttPlayers[0].UserId)
+					{
+						plugin.Server.Map.Broadcast(10, "<color=#00ff00>Innocents win!</color>", false);
+						plugin.Round.RoundLock = false;
+					}/*else if (ev.Player == plugin.tttPlayers[1])
+					{
+						//spawn gun again
+					}*/
 					break;
 			}
 		}
@@ -74,17 +129,26 @@ namespace FrideysEventBundle
 						ev.Player.OverwatchMode = true;
 					}
 					break;
+				case "peanutpocalypseENDING":
+					if (ev.Killer.TeamRole.Team == TeamType.CLASSD)
+					{
+						ev.Player.Teleport(new Vector(ev.Killer.GetPosition().x, ev.Killer.GetPosition().y + 1, ev.Killer.GetPosition().z));
+						ev.Player.OverwatchMode = true;
+					}
+					break;
 				case "dclassbattle":
 					ev.Player.OverwatchMode = true;
 					break;
 				case "dclassinvasion":
+					break;
+				case "ttt":
 					break;
 			}
 		}
 
 		public void OnRoundEnd(RoundEndEvent ev)
 		{
-			if (plugin.currentEvent == "chaosvsntf" || plugin.currentEvent == "chaosvsntfENDING" || plugin.currentEvent == "peanutpocalypse" || plugin.currentEvent == "dclassinvasion")
+			if (plugin.currentEvent == "chaosvsntf" || plugin.currentEvent == "chaosvsntfENDING" || plugin.currentEvent == "peanutpocalypse" || plugin.currentEvent == "peanutpocalypseENDING" || plugin.currentEvent == "dclassinvasion" || plugin.currentEvent == "ttt")
 			{
 				foreach (Player player in GetPlayers())
 				{
@@ -95,6 +159,7 @@ namespace FrideysEventBundle
 
 		public void OnRoundRestart(RoundRestartEvent ev)
 		{
+			plugin.tttPlayers = new List<Player>();
 			plugin.currentEvent = "blocked";
 			inbetweenTimerActivated = false;
 			winCondition = false;
@@ -106,6 +171,40 @@ namespace FrideysEventBundle
 		public void OnRoundStart(RoundStartEvent ev)
 		{
 			plugin.currentEvent = "none";
+		}
+
+		public void OnShoot(PlayerShootEvent ev)
+		{
+			switch (plugin.currentEvent)
+			{
+				default:
+					break;
+				case "ttt":
+					if (ev.Target != null)
+					{
+						if (ev.Player.UserId == plugin.tttPlayers[1].UserId && ev.Target.UserId != plugin.tttPlayers[0].UserId)
+						{
+							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.COM15, new Vector(ev.Player.GetPosition().x, ev.Player.GetPosition().y + 1, ev.Player.GetPosition().z), new Vector(0, 0, 0));
+							ev.Player.ChangeRole(Smod2.API.RoleType.SPECTATOR);
+							ev.Player.OverwatchMode = true;
+							plugin.tttPlayers.RemoveAt(1);
+							ev.Target.ChangeRole(Smod2.API.RoleType.SPECTATOR);
+							ev.Target.OverwatchMode = true;
+						}
+						else if (ev.Target.UserId == plugin.tttPlayers[0].UserId && ev.Player.UserId == plugin.tttPlayers[1].UserId)
+						{
+							ev.Target.ChangeRole(Smod2.API.RoleType.SPECTATOR);
+							plugin.Server.Map.Broadcast(10, "<color=#00ff00>Innocents win!</color>", false);
+							plugin.Round.RoundLock = false;
+						}
+						else
+						{
+							ev.Target.ChangeRole(Smod2.API.RoleType.SPECTATOR);
+							ev.Target.OverwatchMode = true;
+						}
+					}
+					break;
+			}
 		}
 
 		public List<Player> GetPlayers()
@@ -153,6 +252,7 @@ namespace FrideysEventBundle
 								}
 							}
 							plugin.Server.Map.Broadcast(10, "<color=#00ff00>GATE A and B now open, get your MICROs!</color>", false);
+							plugin.currentEvent = "peanutpocalypseENDING";
 							break;
 						case "dclassbattle":
 							if (winCondition)
@@ -181,6 +281,10 @@ namespace FrideysEventBundle
 							plugin.Server.Map.Broadcast(10, "<color=#0000ff>NTF win!</color>", false);
 							plugin.Round.RoundLock = false;
 							break;
+						case "ttt":
+							plugin.Server.Map.Broadcast(10, "<color=#00ff00>Innocents win!</color>", false);
+							plugin.Round.RoundLock = false;
+							break;
 					}
 				}
 
@@ -194,7 +298,7 @@ namespace FrideysEventBundle
 							foreach (Player player in GetPlayers())
 							{
 								player.SetGodmode(false);
-								player.PersonalBroadcast(5, "<color=#ff0000>Invincibility Over. Last man standing wins!</color>", false);
+								player.PersonalBroadcast(5, "<color=#ff0000>Invincibility Over. Last man standing wins!\nSudden death in 7 minutes, you wont be warned!</color>", false);
 							}
 							inbetweenTimerActivated = true;
 							break;
@@ -213,6 +317,20 @@ namespace FrideysEventBundle
 							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, vec, rot);
 							plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, vec, rot);
 							plugin.Server.Map.Broadcast(10, "Supplies at helicopter dropoff!", false);
+							break;
+						case "ttt":
+							try
+							{
+								plugin.tttPlayers[0].GiveItem(Smod2.API.ItemType.COM15);
+								plugin.tttPlayers[1].GiveItem(Smod2.API.ItemType.COM15);
+								plugin.tttPlayers[0].SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
+								plugin.tttPlayers[1].SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
+								inbetweenTimerActivated = true;
+							}
+							catch
+							{
+								plugin.Info("error");
+							}
 							break;
 					}
 					
@@ -249,6 +367,8 @@ namespace FrideysEventBundle
 									{
 										dclassLeft += 1;
 									}
+									if (player.GetGodmode())
+										player.PersonalBroadcast(1, "<color=#00ff00>Battle Royal! Find weapons and items to fight till the last man standing! You are invincible for " + (180 - inbetweenTimer).ToString("0") + " seconds.</color>", false);
 								}
 								if (dclassLeft < 2)
 								{
@@ -285,6 +405,21 @@ namespace FrideysEventBundle
 									plugin.Server.Map.Broadcast(10, "<color=#00ff00>Class Ds win!</color>", false);
 									plugin.Round.RoundLock = false;
 								}
+							}
+							break;
+						case "ttt":
+							int innocentsLeft = 0;
+							foreach (Player player in GetPlayers())
+							{
+								if (player.UserId != plugin.tttPlayers[0].UserId && player.TeamRole.Role == Smod2.API.RoleType.CLASSD)
+								{
+									innocentsLeft += 1;
+								}
+							}
+							if (innocentsLeft < 1)
+							{
+								plugin.Server.Map.Broadcast(10, "<color=#ff0000>The Murderer wins!</color>", false);
+								plugin.Round.RoundLock = false;
 							}
 							break;
 					}

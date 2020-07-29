@@ -35,7 +35,7 @@ namespace FrideysEventBundle
 			}
 			catch
 			{
-				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle\ndclassinvasion" };
+				return new string[] { "\n[ Frideys Event Bundle ]\nMain command: feb event <event> - Execute and event.\nEvents:\nchaosvsntf\npeanutpocalypse\ndclassbattle\ndclassinvasion\nttt" };
 			}
 			if (plugin.currentEvent == "none")
 			{
@@ -59,6 +59,7 @@ namespace FrideysEventBundle
 							case "chaosvsntf":
 								if (GetPlayers().Count >= 2)
 								{
+									plugin.Round.RoundLock = false;
 									List<Elevator> lifts = plugin.Server.Map.GetElevators();
 									foreach (Elevator lift in lifts)
 									{
@@ -79,6 +80,7 @@ namespace FrideysEventBundle
 									for (int i = 0; i < half; i++)
 									{
 										players[i].ChangeRole(Smod2.API.RoleType.CHAOS_INSURGENCY);
+										players[i].SetHealth(150);
 										ClearPlayerInventory(players[i]);
 										ChaosVNTFGiveItems(players[i]);
 										players[i].PersonalBroadcast(7, "<color=#FF0000>Objective: </color><color=#FF7C00>Kill all NTF!</color>", false);
@@ -174,7 +176,7 @@ namespace FrideysEventBundle
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>3 or more players are required for this event.</color>" };
 								}
 							case "dclassbattle":
-								if (GetPlayers().Count >= 5)
+								if (GetPlayers().Count >= 4)
 								{
 									plugin.Round.RoundLock = true;
 									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
@@ -218,8 +220,8 @@ namespace FrideysEventBundle
 									foreach (Player player in GetPlayers())
 									{
 										player.ChangeRole(Smod2.API.RoleType.CLASSD);
-										player.PersonalBroadcast(170, "<color=#00ff00>Battle Royal! Find weapons and items to fight till the last man standing! You are invincible for 3 minutes.</color>", false);
-										player.PersonalBroadcast(6, "<color=#ff0000>Sudden death in 7 minutes, you wont be warned!</color>", false);
+										player.PersonalBroadcast(1, "<color=#00ff00>Battle Royal! Find weapons and items to fight till the last man standing! You are invincible for 180 seconds.</color>", false);
+										
 										player.SetGodmode(true);
 									}
 									List<Elevator> lifts = plugin.Server.Map.GetElevators();
@@ -237,7 +239,7 @@ namespace FrideysEventBundle
 								}
 								else
 								{
-									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>5 or more players are required for this event.</color>" };
+									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>4 or more players are required for this event.</color>" };
 								}
 							case "dclassinvasion":
 								if (GetPlayers().Count >= 4)
@@ -323,6 +325,62 @@ namespace FrideysEventBundle
 								{
 									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>4 or more players are required for this event.</color>" };
 								}
+							case "ttt":
+								if (GetPlayers().Count >= 3)
+								{
+									plugin.Round.RoundLock = true;
+									for (int i = 0; i <= 35; i++)
+										foreach (Smod2.API.Item item in plugin.Server.Map.GetItems((Smod2.API.ItemType)i, true))
+											item.Remove();
+									List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
+									foreach (Smod2.API.Door door in doors)
+									{
+										if (door.Name == "914" || door.Name == "CHECKPOINT_LCZ_A" || door.Name == "CHECKPOINT_LCZ_B")
+										{
+											door.Open = false;
+											door.Locked = true;
+										}
+									}
+									Player murderer;
+									plugin.Info("1");
+									Player sherif;
+									plugin.Info("2");
+									List<Player> innocents = GetPlayers();
+									System.Random rnd = new System.Random();
+									int murderInt = rnd.Next(0, innocents.Count);
+									murderer = innocents[murderInt];
+									innocents.Remove(murderer);
+									plugin.Info("3");
+									int shrifInt = rnd.Next(0, innocents.Count);
+									sherif = innocents[shrifInt];
+									innocents.Remove(sherif);
+									plugin.Info("4");
+									plugin.tttPlayers.Add(murderer);
+									plugin.tttPlayers.Add(sherif);
+									plugin.Info("5");
+									murderer.ChangeRole(Smod2.API.RoleType.CLASSD);
+									murderer.PersonalBroadcast(10, "<color=#ff0000>You are the murderer</color>\n<color=#ff8f8f>You will recieve your weapon in 30 seconds.</color>", false);
+									murderer.PersonalBroadcast(20, "<color=#ff8f8f>You must kill everyone, but beware of the sherif who can kill you.</color>", false);
+									sherif.ChangeRole(Smod2.API.RoleType.CLASSD);
+									sherif.PersonalBroadcast(10, "<color=#ffdd00>You are the Sherif</color>\n<color=#fff199>You will recieve your gun in 30 seconds.</color>", false);
+									sherif.PersonalBroadcast(20, "<color=#fff199>You must kill the murderer, but beware if you kill the wrong person, youll die!</color>", false);
+									plugin.Info("6");
+									foreach (Player player in innocents)
+									{
+										player.ChangeRole(Smod2.API.RoleType.CLASSD);
+										player.PersonalBroadcast(10, "<color=#00ff00>You are an Innocent</color>\n<color=#a3ffa3>You must not die.</color>", false);
+										player.PersonalBroadcast(20, "<color=#a3ffa3>If the sherif dies, you can pick up their gun and become the new sherif.</color>", false);
+									}
+									plugin.time = 600;
+									plugin.inbetweenTime = 30;
+									plugin.currentEvent = "ttt";
+									string str = "<color=#00FF00>Executing event: </color><color=#99FF99>" + args[1] + "</color>";
+									return new string[] { str };
+								}
+								else
+								{
+									return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>3 or more players are required for this event.</color>" };
+								}
 						}
 				}
 			}
@@ -403,7 +461,7 @@ namespace FrideysEventBundle
 
 		void DCBtrySpawnItems(System.Random rnd, Smod2.API.Door door)
 		{
-			int chanceWhatItem = rnd.Next(0, 9);
+			int chanceWhatItem = rnd.Next(0, 10);
 			switch (chanceWhatItem)
 			{
 				default:
@@ -434,6 +492,9 @@ namespace FrideysEventBundle
 					break;
 				case 8:
 					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.FLASHBANG, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
+					break;
+				case 9:
+					plugin.Server.Map.SpawnItem(Smod2.API.ItemType.MP7, new Vector(door.Position.x, door.Position.y + 2, door.Position.z), new Vector(0, 0, 0));
 					break;
 			}
 		}
