@@ -24,18 +24,14 @@ namespace FrideysEventBundle
 		version = "1.0",
 		SmodMajor = 3,
 		SmodMinor = 8,
-		SmodRevision = 2
+		SmodRevision = 3
 		)]
 	public class FrideysEventBundle : Plugin
 	{
 		[ConfigOption]
 		public readonly bool enable = true;
 
-		public string currentEvent = "blocked";
-		public float time;
-		public float inbetweenTime;
-
-		public List<Player> tttPlayers = new List<Player>();
+		public List<string> eventQeue = new List<string>();
 
 		public override void OnDisable()
 		{
@@ -50,7 +46,12 @@ namespace FrideysEventBundle
 		public override void Register()
 		{
 			AddEventHandlers(new EventHandler(this));
-			AddCommand("feb", new EventCommand(this));
+			AddEventHandlers(new ChaosVsNTFEventHandler(this));
+			AddEventHandlers(new PeanutpocalypseEventHandler(this));
+			AddEventHandlers(new DClassBattleEventHandler(this));
+			AddEventHandlers(new DClassInvasionEventHandler(this));
+			AddEventHandlers(new TTTEventHandler(this));
+			AddCommand("event", new EventCommand(this));
 		}
 	}
 }
