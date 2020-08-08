@@ -44,7 +44,7 @@ namespace FrideysEventBundle
         public bool BeginEvent()
         {
             List<Player> players = GetPlayers();
-            if (players.Count >= 2)
+            if (players.Count >= 4)
             {
                 List<Elevator> lifts = plugin.Server.Map.GetElevators();
                 foreach (Elevator lift in lifts)

@@ -46,7 +46,7 @@ namespace FrideysEventBundle
 
         public bool BeginEvent()
         {
-            if (GetPlayers().Count >= 3)
+            if (GetPlayers().Count >= 4)
             {
                 plugin.Round.RoundLock = true;
                 for (int i = 0; i <= 35; i++)
