@@ -34,6 +34,9 @@ namespace FrideysEventBundle
 		[ConfigOption]
 		public readonly bool auto_add_to_qeue = true;
 
+		[ConfigOption]
+		public readonly int normal_rounds_between_auto_event = 4;
+
 		public List<string> eventQeue = new List<string>();
 
 		public override void OnDisable()

@@ -34,7 +34,7 @@ namespace FrideysEventBundle
 				delete = false;
 				if (plugin.auto_add_to_qeue)
 				{
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < plugin.normal_rounds_between_auto_event; i++)
 					{
 						plugin.eventQeue.Add("noevent");
 					}
