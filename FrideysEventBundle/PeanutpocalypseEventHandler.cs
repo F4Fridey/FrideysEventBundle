@@ -23,7 +23,7 @@ namespace FrideysEventBundle
         private bool eventRunning = false;
         float time = 180f;
 
-        public void OnRoundStart(RoundStartEvent ev)
+        public void OnRoundStart(RoundStartEvent ev)//check if first in qeue
         {
             try
             {

@@ -20,7 +20,7 @@ namespace FrideysEventBundle
 			this.plugin = plugin;
 		}
 
-		public void OnRoundRestart(RoundRestartEvent ev)
+		public void OnRoundRestart(RoundRestartEvent ev)//remove current event from the qeue
 		{
 			bool delete;
 			try
@@ -32,16 +32,40 @@ namespace FrideysEventBundle
 			{
 				plugin.Debug("No event in qeue.");
 				delete = false;
+				if (plugin.auto_add_to_qeue)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						plugin.eventQeue.Add("noevent");
+					}
+					System.Random rnd = new System.Random();
+					int eventID = rnd.Next(0, 5);
+					switch (eventID)
+					{
+						default:
+							break;
+						case 0:
+							plugin.eventQeue.Add("chaosvsntf");
+							break;
+						case 1:
+							plugin.eventQeue.Add("peanutpocalypse");
+							break;
+						case 2:
+							plugin.eventQeue.Add("dclassbattle");
+							break;
+						case 3:
+							plugin.eventQeue.Add("dclassinvasion");
+							break;
+						case 4:
+							plugin.eventQeue.Add("ttt");
+							break;
+					}
+				}
 			}
 			if (delete)
 			{
 				plugin.eventQeue.RemoveAt(0);
 			}
-		}
-
-		public void OnRoundStart(RoundStartEvent ev)
-		{
-			
 		}
 	}
 }

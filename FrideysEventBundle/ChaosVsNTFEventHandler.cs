@@ -23,7 +23,7 @@ namespace FrideysEventBundle
         private bool eventRunning = false;
         float time = 300f;
 
-        public void OnRoundStart(RoundStartEvent ev)
+        public void OnRoundStart(RoundStartEvent ev)//check if this event is 1st in qeue
         {
             try
             {
@@ -41,7 +41,7 @@ namespace FrideysEventBundle
             }
         }
 
-        public bool BeginEvent()
+        public bool BeginEvent()//start the event
         {
             List<Player> players = GetPlayers();
             if (players.Count >= 2)
@@ -54,7 +54,7 @@ namespace FrideysEventBundle
                 }
                 
                 int half = players.Count / 2;
-                for (int i = 0; i < half; i++)
+                for (int i = 0; i < half; i++)//get one half of players and make em chaos
                 {
                     players[i].ChangeRole(Smod2.API.RoleType.CHAOS_INSURGENCY);
                     players[i].SetHealth(150);
@@ -63,7 +63,7 @@ namespace FrideysEventBundle
                     players[i].PersonalBroadcast(7, "<color=#FF0000>Objective: </color><color=#FF7C00>Kill all NTF!</color>", false);
                     players[i].PersonalBroadcast(7, "<color=#B00000>Deathmatch will occur in 5 minutes, you wont be warned!</color>", false);
                 }
-                for (int i = half; i < players.Count; i++)
+                for (int i = half; i < players.Count; i++)//get other half of players and make em ntf
                 {
                     players[i].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
                     ClearPlayerInventory(players[i]);
@@ -81,7 +81,7 @@ namespace FrideysEventBundle
             }
         }
 
-        public void OnPlayerJoin(PlayerJoinEvent ev)
+        public void OnPlayerJoin(PlayerJoinEvent ev)// new players that join are put in OW
         {
             if (eventRunning)
             {
@@ -90,7 +90,7 @@ namespace FrideysEventBundle
             }
         }
 
-        public void OnPlayerDie(PlayerDeathEvent ev)
+        public void OnPlayerDie(PlayerDeathEvent ev)// dead players are put in OW
         {
             if (eventRunning)
             {
@@ -114,7 +114,7 @@ namespace FrideysEventBundle
             }
         }
 
-        void EndEvent()
+        void EndEvent()//end the event
         {
             foreach (Player player in GetPlayers())
             {
@@ -130,7 +130,7 @@ namespace FrideysEventBundle
 
         public void OnFixedUpdate(FixedUpdateEvent ev)
         {
-            if (eventRunning && !suddenDeathStarted)
+            if (eventRunning && !suddenDeathStarted)//count down till sudden death
             {
                 if (timer < time)
                 {
@@ -175,13 +175,13 @@ namespace FrideysEventBundle
             }
         }
 
-        private void ClearPlayerInventory(Player player)
+        private void ClearPlayerInventory(Player player)//clear player inventory, if you couldnt tell :)
         {
             foreach (Smod2.API.Item item in player.GetInventory())
                 item.Remove();
         }
 
-        private void GiveItems(Player player)
+        private void GiveItems(Player player)//give everyone the same items
         {
             player.GiveItem(Smod2.API.ItemType.GUN_MP7);
             player.GiveItem(Smod2.API.ItemType.GUN_PROJECT90);

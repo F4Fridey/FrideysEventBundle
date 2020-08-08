@@ -31,6 +31,9 @@ namespace FrideysEventBundle
 		[ConfigOption]
 		public readonly bool enable = true;
 
+		[ConfigOption]
+		public readonly bool auto_add_to_qeue = true;
+
 		public List<string> eventQeue = new List<string>();
 
 		public override void OnDisable()
