@@ -77,10 +77,11 @@ namespace FrideysEventBundle
                     players[ntf1].ChangeRole(Smod2.API.RoleType.NTF_COMMANDER);
                     ClearPlayerInventory(players[ntf1]);
                     plugin.Info("3");
-                    GiveItems(players[ntf1], 0);
+                    GiveItems(players[ntf1], 0, 6);
                     players[ntf1].SetHealth(5000);
                     plugin.Info("4");
                     SpawnDClass(players);
+                    time = 360;
                 }
                 else if (7 <= GetPlayers().Count && GetPlayers().Count < 13)
                 {
@@ -95,12 +96,13 @@ namespace FrideysEventBundle
                     ClearPlayerInventory(players[ntf1]);
                     ClearPlayerInventory(players[ntf2]);
                     plugin.Info("3");
-                    GiveItems(players[ntf1], 0);
-                    GiveItems(players[ntf2], 0);
+                    GiveItems(players[ntf1], 0, 7);
+                    GiveItems(players[ntf2], 0, 7);
                     players[ntf1].SetHealth(5000);
                     players[ntf2].SetHealth(5000);
                     plugin.Info("4");
                     SpawnDClass(players);
+                    time = 420;
                 }
                 else
                 {
@@ -118,17 +120,17 @@ namespace FrideysEventBundle
                     ClearPlayerInventory(players[ntf2]);
                     ClearPlayerInventory(players[ntf3]);
                     plugin.Info("3");
-                    GiveItems(players[ntf1], 0);
-                    GiveItems(players[ntf2], 0);
-                    GiveItems(players[ntf3], 0);
+                    GiveItems(players[ntf1], 0, 8);
+                    GiveItems(players[ntf2], 0, 8);
+                    GiveItems(players[ntf3], 0, 8);
                     players[ntf1].SetHealth(5000);
                     players[ntf2].SetHealth(5000);
                     players[ntf3].SetHealth(5000);
                     plugin.Info("4");
                     SpawnDClass(players);
+                    time = 480;
                 }
                 plugin.Info("all spawned");
-                time = 360;
                 inbetweenTime = 120f;
                 eventRunning = true;
                 return true;
@@ -296,7 +298,7 @@ namespace FrideysEventBundle
                 item.Remove();
         }
 
-        void GiveItems(Player player, int playerClass/*1=dboi|0=ntf*/)
+        void GiveItems(Player player, int playerClass/*1=dboi|0=ntf*/, int timeMin)
         {
             switch (playerClass)
             {
@@ -309,12 +311,12 @@ namespace FrideysEventBundle
                     player.SetAmmo(AmmoType.AMMO556, 200);
                     player.SetAmmo(AmmoType.AMMO762, 200);
                     player.SetAmmo(AmmoType.AMMO9MM, 200);
-                    player.PersonalBroadcast(15, "You have 5000 HP, survive for 7 minutes.", false);
+                    player.PersonalBroadcast(15, "You have 5000 HP, survive for " + timeMin + " minutes.", false);
                     break;
                 case 1:
                     player.GiveItem(Smod2.API.ItemType.COM15);
                     player.SetAmmo(AmmoType.AMMO9MM, 100);
-                    player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have 7 minutes", false);
+                    player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have " + timeMin + " minutes", false);
                     break;
             }
 

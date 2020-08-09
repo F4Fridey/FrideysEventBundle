@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace FrideysEventBundle
 {
-    class TTTEventHandler : IEventHandlerPlayerDropItem, IEventHandlerPlayerPickupItem, IEventHandlerPlayerJoin, IEventHandlerPlayerLeave, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerShoot, IEventHandlerFixedUpdate, IEventHandlerRoundStart
+    class TTTEventHandler : IEventHandlerPlayerDropItem, IEventHandlerPlayerPickupItem, IEventHandlerPlayerJoin, IEventHandlerPlayerLeave, IEventHandlerRoundEnd, IEventHandlerRoundRestart, IEventHandlerShoot, IEventHandlerFixedUpdate, IEventHandlerRoundStart, IEventHandler079Door
     {
         private readonly FrideysEventBundle plugin;
 
@@ -49,13 +49,11 @@ namespace FrideysEventBundle
             if (GetPlayers().Count >= 4)
             {
                 plugin.Round.RoundLock = true;
-                for (int i = 0; i <= 35; i++)
-                    foreach (Smod2.API.Item item in plugin.Server.Map.GetItems((Smod2.API.ItemType)i, true))
-                        item.Remove();
+                
                 List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
                 foreach (Smod2.API.Door door in doors)
                 {
-                    if (door.Name == "914" || door.Name == "CHECKPOINT_LCZ_A" || door.Name == "CHECKPOINT_LCZ_B")
+                    if (door.Name == "914" || door.Name == "CHECKPOINT_LCZ_A" || door.Name == "CHECKPOINT_LCZ_B" || door.Name == "LCZ_ARMORY" || door.Name == "012")
                     {
                         door.Open = false;
                         door.Locked = true;
@@ -114,7 +112,7 @@ namespace FrideysEventBundle
         {
             if (eventRunning)
             {
-                if (ev.Player.UserId != tttPlayers[0].UserId)
+                if (ev.Player.UserId != tttPlayers[0].UserId && ev.Item.ItemType == Smod2.API.ItemType.USP)
                 {
                     tttPlayers.Add(ev.Player);
                     ev.Player.SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
@@ -150,7 +148,7 @@ namespace FrideysEventBundle
                 }
                 else if (ev.Player == tttPlayers[1])
 			    {
-                    plugin.Server.Map.SpawnItem(Smod2.API.ItemType.COM15, new Vector(ev.Player.GetPosition().x, ev.Player.GetPosition().y + 1, ev.Player.GetPosition().z), new Vector(0, 0, 0));
+                    plugin.Server.Map.SpawnItem(Smod2.API.ItemType.USP, new Vector(ev.Player.GetPosition().x, ev.Player.GetPosition().y + 1, ev.Player.GetPosition().z), new Vector(0, 0, 0));
                     tttPlayers.RemoveAt(1);
                     plugin.Server.Map.Broadcast(10, "<color=#ff0000>The sherif has died! Find the gun to become the next sherif!</color>", false);
                 }
@@ -183,6 +181,7 @@ namespace FrideysEventBundle
             eventRunning = false;
             inbetweenTimerActivated = false;
             inbetweenTimer = 0;
+            deletedItems = false;
         }
 
         public void OnShoot(PlayerShootEvent ev)
@@ -193,12 +192,13 @@ namespace FrideysEventBundle
                 {
                     if (ev.Player.UserId == tttPlayers[1].UserId && ev.Target.UserId != tttPlayers[0].UserId)
                     {
-                        plugin.Server.Map.SpawnItem(Smod2.API.ItemType.COM15, new Vector(ev.Player.GetPosition().x, ev.Player.GetPosition().y + 1, ev.Player.GetPosition().z), new Vector(0, 0, 0));
+                        plugin.Server.Map.SpawnItem(Smod2.API.ItemType.USP, new Vector(ev.Player.GetPosition().x, ev.Player.GetPosition().y + 1, ev.Player.GetPosition().z), new Vector(0, 0, 0));
                         ev.Player.ChangeRole(Smod2.API.RoleType.SPECTATOR);
                         ev.Player.OverwatchMode = true;
                         tttPlayers.RemoveAt(1);
                         ev.Target.ChangeRole(Smod2.API.RoleType.SPECTATOR);
                         ev.Target.OverwatchMode = true;
+                        plugin.Server.Map.Broadcast(10, "<color=#ff0000>The sherif has died! Find the gun to become the next sherif!</color>", false);
                     }
                     else if (ev.Target.UserId == tttPlayers[0].UserId && ev.Player.UserId == tttPlayers[1].UserId)
                     {
@@ -242,7 +242,7 @@ namespace FrideysEventBundle
                     try
                     {
                         tttPlayers[0].GiveItem(Smod2.API.ItemType.COM15);
-                        tttPlayers[1].GiveItem(Smod2.API.ItemType.COM15);
+                        tttPlayers[1].GiveItem(Smod2.API.ItemType.USP);
                         tttPlayers[0].SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
                         tttPlayers[1].SetAmmo(Smod2.API.AmmoType.AMMO9MM, 500);
                         inbetweenTimerActivated = true;
@@ -280,6 +280,19 @@ namespace FrideysEventBundle
         public List<Player> GetPlayers()
         {
             return plugin.Server.GetPlayers();
+        }
+
+        bool deletedItems = false;
+
+        public void On079Door(Player079DoorEvent ev)
+        {
+            if (eventRunning && !deletedItems)
+            {
+                for (int i = 0; i <= 35; i++)
+                    foreach (Smod2.API.Item item in plugin.Server.Map.GetItems((Smod2.API.ItemType)i, true))
+                        item.Remove();
+                deletedItems = true;
+            }
         }
     }
 }
