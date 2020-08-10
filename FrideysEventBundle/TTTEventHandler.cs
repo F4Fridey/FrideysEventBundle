@@ -49,7 +49,9 @@ namespace FrideysEventBundle
             if (GetPlayers().Count >= 4)
             {
                 plugin.Round.RoundLock = true;
-                
+                for (int i = 0; i <= 35; i++)
+                    foreach (Smod2.API.Item item in plugin.Server.Map.GetItems((Smod2.API.ItemType)i, true))
+                        item.Remove();
                 List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
                 foreach (Smod2.API.Door door in doors)
                 {

@@ -1,7 +1,5 @@
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\FrideysEventBundle.dll
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\FrideysEventBundle.pdb
-C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\Assembly-CSharp.dll
-C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\Smod2.dll
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\UnityEngine.dll
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\UnityEngine.CoreModule.dll
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\UnityEngine.AudioModule.dll
@@ -64,3 +62,5 @@ C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\obj\Debug\FrideysEventBundle.csproj.CopyComplete
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\obj\Debug\FrideysEventBundle.dll
 C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\obj\Debug\FrideysEventBundle.pdb
+C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\Assembly-CSharp.dll
+C:\Users\f4fri\Desktop\Kavex Federation\SCP SL Programm Stuff\scopophobiaPlugins\FrideysEventBundle\FrideysEventBundle\FrideysEventBundle\bin\Debug\Smod2.dll

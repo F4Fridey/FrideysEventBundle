@@ -57,6 +57,7 @@ namespace FrideysEventBundle
 			AddEventHandlers(new DClassBattleEventHandler(this));
 			AddEventHandlers(new DClassInvasionEventHandler(this));
 			AddEventHandlers(new TTTEventHandler(this));
+			AddEventHandlers(new DeathmatchEventHandler(this));
 			AddCommand("event", new EventCommand(this));
 		}
 	}

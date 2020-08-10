@@ -59,6 +59,7 @@
     <Compile Include="ChaosVsNTFEventHandler.cs" />
     <Compile Include="DClassBattleEventHandler.cs" />
     <Compile Include="DClassInvasionEventHandler.cs" />
+    <Compile Include="DeathmatchEventHandler.cs" />
     <Compile Include="EventCommand.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="FrideysEventBundle.cs" />

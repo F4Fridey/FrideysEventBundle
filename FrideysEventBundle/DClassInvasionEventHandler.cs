@@ -330,7 +330,6 @@ namespace FrideysEventBundle
                 if (player.TeamRole.Role != Smod2.API.RoleType.NTF_COMMANDER && player.OverwatchMode == false)
                 {
                     player.ChangeRole(Smod2.API.RoleType.CLASSD, true, false);
-                    GiveItems(player, 1);
                     player.Teleport(new Vector(-11, 1002, -43));
                 }
             }
