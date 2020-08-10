@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace FrideysEventBundle
 {
-    class EventHandler : IEventHandlerRoundRestart
+    class EventHandler : IEventHandlerRoundRestart, IEventHandlerRoundStart
     {
 		private readonly FrideysEventBundle plugin;
 
@@ -23,6 +23,7 @@ namespace FrideysEventBundle
 		public void OnRoundRestart(RoundRestartEvent ev)//remove current event from the qeue
 		{
 			bool delete;
+			plugin.roundState = 0;
 			try
 			{
 				plugin.Debug("Removing " + plugin.eventQeue[0] + " from the qeue.");
@@ -66,6 +67,11 @@ namespace FrideysEventBundle
 			{
 				plugin.eventQeue.RemoveAt(0);
 			}
+		}
+
+		public void OnRoundStart(RoundStartEvent ev)
+		{
+			plugin.roundState = 1;
 		}
 	}
 }

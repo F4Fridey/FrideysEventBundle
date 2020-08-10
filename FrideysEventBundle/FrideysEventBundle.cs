@@ -38,6 +38,7 @@ namespace FrideysEventBundle
 		public readonly int normal_rounds_between_auto_event = 4;
 
 		public List<string> eventQeue = new List<string>();
+		public int roundState = 0;
 
 		public override void OnDisable()
 		{

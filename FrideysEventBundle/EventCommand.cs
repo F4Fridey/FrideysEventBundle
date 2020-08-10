@@ -50,6 +50,13 @@ namespace FrideysEventBundle
 					{
 						return new string[] { "<color=#FF0000>Error</color> : <color=#FF8383>Please specify a valid event.</color>" };
 					}
+					if (plugin.roundState == 1)
+					{
+						bool qeueEmpty = false;
+						try { plugin.Debug(plugin.eventQeue[0]); } catch { qeueEmpty = true; }
+						if (qeueEmpty)
+							plugin.eventQeue.Add("noevent");
+					}
 					switch (args[1])//add events to the qeue
 					{
 						default:
