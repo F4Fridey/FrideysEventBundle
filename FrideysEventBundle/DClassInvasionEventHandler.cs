@@ -280,7 +280,9 @@ namespace FrideysEventBundle
                     break;
             }
             player.GiveItem(Smod2.API.ItemType.COM15);
+            player.GiveItem(Smod2.API.ItemType.MP7);
             player.SetAmmo(AmmoType.AMMO9MM, 100);
+            player.SetAmmo(AmmoType.AMMO762, 75);
             player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have " + ((time - timer) / 60).ToString("0.0") + " minutes", false);
         }
 
@@ -315,7 +317,9 @@ namespace FrideysEventBundle
                     break;
                 case 1:
                     player.GiveItem(Smod2.API.ItemType.COM15);
+                    player.GiveItem(Smod2.API.ItemType.MP7);
                     player.SetAmmo(AmmoType.AMMO9MM, 100);
+                    player.SetAmmo(AmmoType.AMMO762, 75);
                     player.PersonalBroadcast(10, "Kill the NTF!! They are VERY tough! You have " + timeMin + " minutes", false);
                     break;
             }
