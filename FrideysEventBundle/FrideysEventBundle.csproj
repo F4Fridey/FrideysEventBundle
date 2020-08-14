@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Assembly-CSharp, Version=10.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\refrences\Assembly-CSharp.dll</HintPath>
     </Reference>

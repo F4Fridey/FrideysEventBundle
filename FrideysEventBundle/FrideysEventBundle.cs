@@ -24,7 +24,7 @@ namespace FrideysEventBundle
 		version = "1.0",
 		SmodMajor = 3,
 		SmodMinor = 8,
-		SmodRevision = 3
+		SmodRevision = 4
 		)]
 	public class FrideysEventBundle : Plugin
 	{
