@@ -35,7 +35,7 @@ namespace FrideysEventBundle
 			}
 			catch//if not the help text is sent
 			{
-				return new string[] { "\n[ Frideys Event Bundle ]\nMain commands:\nevent add <event> - Add an event to the qeue.\nevent qeue view - Prints the current event qeue.\nevent qeue clear - Clears the current event qeue.\nEvents:\nnoevent - Use this if you want a break between events.\nchaosvsntf - Needs 4 people. Half of the server is NTF, the others are Chaos. The two must fight it out.\npeanutpocalypse - Needs 4 people. Spawns 1 peanut and the rest are D class. The d class must get to the gates to get MICROs while the peanuts must kill the D class to duplicate.\ndclassbattle - Needs 4 people. Class D Battle Royal.\ndclassinvasion - Needs 4 people. 1 - 3 NTF spawn with 5000 HP and must survive for 7 minutes. The rest are D class that constantly respawn with guns.\nttt - Needs 4 people. 1 murderer that must kill everyone, 1 sherif that must kill the murderer, and the rest are innocent of which can pick up the gun to become a sherif if the sherif dies.\ndeathmatch - Deathmatch, the one with the most kills wins after 7 minutes!" };
+				return new string[] { "\n[ Frideys Event Bundle ]\nMain commands:\nevent add <event> - Add an event to the qeue.\nevent qeue view - Prints the current event qeue.\nevent qeue clear - Clears the current event qeue.\nEvents:\nnoevent - Use this if you want a break between events.\nchaosvsntf - Needs 4 people. Half of the server is NTF, the others are Chaos. The two must fight it out.\npeanutpocalypse - Needs 4 people. Spawns 1 peanut and the rest are D class. The d class must get to the gates to get MICROs while the peanuts must kill the D class to duplicate.\ndclassbattle - Needs 4 people. Class D Battle Royal.\ndclassinvasion - Needs 4 people. 1 - 3 NTF spawn with 5000 HP and must survive for 7 minutes. The rest are D class that constantly respawn with guns.\nttt - Needs 4 people. 1 murderer that must kill everyone, 1 sherif that must kill the murderer, and the rest are innocent of which can pick up the gun to become a sherif if the sherif dies.\ndeathmatch - Deathmatch, the one with the most kills wins after 7 minutes!\nteamdeathmatch - Team Deathmatch, the team with the most kills wins after 7 minutes!" };
 			}
 			switch (args[0])//check what the first argument is
 			{
@@ -82,6 +82,9 @@ namespace FrideysEventBundle
 						case "deathmatch":
 							plugin.eventQeue.Add("deathmatch");
 							return new string[] { "Added Deathmatch to the event qeue.\nNote: If requiered players are not met, a normal round will occur." };
+						case "teamdeathmatch":
+							plugin.eventQeue.Add("teamdeathmatch");
+							return new string[] { "Added Team Deathmatch to the event qeue.\nNote: If requiered players are not met, a normal round will occur." };
 					}
 				case "qeue":
 					try
