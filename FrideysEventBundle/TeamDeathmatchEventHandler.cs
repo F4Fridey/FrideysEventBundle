@@ -55,7 +55,7 @@ namespace FrideysEventBundle
         {
             players = GetPlayers();
             
-            if (players.Count >= 2)
+            if (players.Count >= 8)
             {
                 ntfKills = 0;
                 chaosKills = 0;

@@ -140,11 +140,8 @@ namespace FrideysEventBundle
                     if (door.Name == "096" || door.Name == "HCZ_ARMORY" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "106_BOTTOM")
                     {
                         door.Locked = true;
-                    }else if (door.Name == "CHECKPOINT_EZ")
-                    {
-                        ezCheckpoint = door.Position;
                     }
-                    if (door.Position.y >= -900 && door.Position.y <= -1100)
+                    if (door.Position.y >= -900 && door.Position.y <= -1100 && door.Name != "CHECKPOINT_EZ")
                     {
                         doorsList.Add(door);
                         door.Open = true;
@@ -155,7 +152,9 @@ namespace FrideysEventBundle
                     try
                     {
                         player.ChangeRole(Smod2.API.RoleType.CLASSD, true, false);
-                        player.Teleport(ezCheckpoint);
+                        System.Random rnd = new System.Random();
+                        int pos = rnd.Next(0, doorsList.Count);
+                        player.Teleport(doorsList[pos].Position);
                         player.SetGodmode(true);
                         extraText = "<color=#00ff00>Deathmatch! Get the most kills, Invincibility latsts for 30 seconds!</color>";
                         player.GiveItem(Smod2.API.ItemType.USP);

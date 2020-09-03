@@ -37,8 +37,16 @@ namespace FrideysEventBundle
 		[ConfigOption]
 		public readonly int normal_rounds_between_auto_event = 4;
 
+		[ConfigOption]
+		public readonly float timeToPowerOuttage = 900;
+
+		[ConfigOption("welcome_messages")]
+		public readonly string welcomeMessages = "5|Welcome to <color=#00ff00>The Fridey Hub</color>!;7|<color=#ff0000>Please read the rules in the server info by pressing ESC!</color>;7|<color=#00ff00>We also have a discord server, link is in the server list title!</color>";
+
 		public List<string> eventQeue = new List<string>();
 		public int roundState = 0;
+
+		public float roundTime;
 
 		public override void OnDisable()
 		{
@@ -61,6 +69,7 @@ namespace FrideysEventBundle
 			AddEventHandlers(new DeathmatchEventHandler(this));
 			AddEventHandlers(new TeamDeathmatchEventHandler(this));
 			AddCommand("event", new EventCommand(this));
+			AddCommand("time", new TimeCommand(this));
 		}
 	}
 }
