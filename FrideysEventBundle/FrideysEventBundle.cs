@@ -55,6 +55,10 @@ namespace FrideysEventBundle
 
 		public override void OnEnable()
 		{
+			if (this.SendStringByID == null)
+			{
+				this.Error("SCPDiscordExtention : discord bot support is down");
+			}
 			this.Info(this.Details.name + " has been loaded :)");
 		}
 
@@ -70,6 +74,19 @@ namespace FrideysEventBundle
 			AddEventHandlers(new TeamDeathmatchEventHandler(this));
 			AddCommand("event", new EventCommand(this));
 			AddCommand("time", new TimeCommand(this));
+		}
+
+		//----------------- testing
+
+		[PipeLink("karlofduty.scpdiscord", "SendStringByID")]
+		private readonly MethodPipe<bool> SendStringByID;
+
+		public void sendmassagediscord(string msg, string key)
+		{
+			if (this.SendStringByID != null)
+			{
+				this.SendStringByID.Invoke(new object[] { key, msg });
+			}
 		}
 	}
 }

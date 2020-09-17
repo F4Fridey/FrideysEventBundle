@@ -35,6 +35,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\refrences\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="SCPDiscord">
+      <HintPath>..\..\..\..\..\..\SCPDiscord.dll</HintPath>
+    </Reference>
     <Reference Include="Smod2, Version=3.8.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\refrences\Smod2.dll</HintPath>

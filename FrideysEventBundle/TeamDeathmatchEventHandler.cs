@@ -144,6 +144,7 @@ namespace FrideysEventBundle
                 time = 420;
                 inbetweenTime = 30;
                 eventRunning = true;
+                plugin.sendmassagediscord("**Team Deathmatch Event started...**", "502152907509202945");
                 return true;
             }
             else

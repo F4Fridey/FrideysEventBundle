@@ -94,6 +94,7 @@ namespace FrideysEventBundle
                 time = 420;
                 inbetweenTime = 30;
                 eventRunning = true;
+                plugin.sendmassagediscord("**TTT Event started...**", "502152907509202945");
                 return true;
             }
             else

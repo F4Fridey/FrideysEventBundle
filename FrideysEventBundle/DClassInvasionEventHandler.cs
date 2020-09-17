@@ -133,6 +133,7 @@ namespace FrideysEventBundle
                 plugin.Info("all spawned");
                 inbetweenTime = 120f;
                 eventRunning = true;
+                plugin.sendmassagediscord("**D Class Invasion Event started...**", "502152907509202945");
                 return true;
             }
             else
