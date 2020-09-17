@@ -46,11 +46,13 @@ namespace FrideysEventBundle
         float inbetweenTime;
         int mode;/*0=on Surface with less than 11 ppl|1= in facility with 11 or more ppl*/
 
+        List<Smod2.API.Door> doorsList = new List<Smod2.API.Door>();
+
         public bool BeginEvent()
         {
             players = new List<Player>().ToArray();
             players = GetPlayers().ToArray();
-            if (players.Length >= 4/* && players.Length <= 10*/)
+            if (players.Length >= 4 && players.Length <= 10)
             {
                 mode = 0;
                 List<int> beginStats = new List<int>();
@@ -109,11 +111,69 @@ namespace FrideysEventBundle
                 eventRunning = true;
                 return true;
             }
-            /*else if (players.Length > 10)
+            else if (players.Length > 10)
             {
-
+                mode = 1;
+                List<int> beginStats = new List<int>();
+                for (int i = 0; i < players.Length; i++)
+                {
+                    beginStats.Add(0);
+                }
+                stats = beginStats.ToArray();
+                plugin.Round.RoundLock = true;
+                for (int i = 0; i < players.Length; i++)
+                {
+                    plugin.Info(players[i].Name);
+                    plugin.Info(stats[i].ToString());
+                }
+                List<Elevator> lifts = plugin.Server.Map.GetElevators();
+                foreach (Elevator lift in lifts)
+                {
+                    try { lift.Locked = true; }
+                    catch { plugin.Debug(lift.ToString() + " is not lockable."); }
+                }
+                List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
+                doorsList.Clear();
+                Vector ezCheckpoint = new Vector(0, 0, 0);
+                foreach (Smod2.API.Door door in doors)
+                {
+                    if (door.Name == "096" || door.Name == "HCZ_ARMORY" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "106_BOTTOM")
+                    {
+                        door.Locked = true;
+                    }
+                    if (door.Position.y >= -900 && door.Position.y <= -1100 && door.Name != "CHECKPOINT_EZ")
+                    {
+                        doorsList.Add(door);
+                        door.Open = true;
+                    }
+                }
+                foreach (Player player in players)
+                {
+                    try
+                    {
+                        player.ChangeRole(Smod2.API.RoleType.CLASSD, true, false);
+                        System.Random rnd = new System.Random();
+                        int pos = rnd.Next(0, doorsList.Count);
+                        player.Teleport(doorsList[pos].Position);
+                        player.SetGodmode(true);
+                        extraText = "<color=#00ff00>Deathmatch! Get the most kills, Invincibility latsts for 30 seconds!</color>";
+                        player.GiveItem(Smod2.API.ItemType.USP);
+                        player.GiveItem(Smod2.API.ItemType.P90);
+                        player.GiveItem(Smod2.API.ItemType.MP7);
+                        player.GiveItem(Smod2.API.ItemType.E11_STANDARD_RIFLE);
+                        player.GiveItem(Smod2.API.ItemType.COM15);
+                        player.SetAmmo(Smod2.API.AmmoType.AMMO556, 1000);
+                        player.SetAmmo(Smod2.API.AmmoType.AMMO762, 1000);
+                        player.SetAmmo(Smod2.API.AmmoType.AMMO9MM, 1000);
+                        player.GiveItem(Smod2.API.ItemType.MEDKIT);
+                    }
+                    catch { }
+                }
+                time = 450;
+                inbetweenTime = 30;
+                eventRunning = true;
                 return true;
-            }*/
+            }
             else
             {
                 return false;
@@ -389,7 +449,8 @@ namespace FrideysEventBundle
                 }
             }else if (mode == 1)
             {
-
+                int pos = rnd.Next(0, doorsList.Count);
+                player.Teleport(doorsList[pos].Position);
             }
         }
     }

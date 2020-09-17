@@ -86,6 +86,14 @@ namespace FrideysEventBundle
                             break;
                     }
                 }
+                foreach (Smod2.API.Door door in plugin.Server.Map.GetDoors())
+                {
+                    if (door.Name == "GATE_A" || door.Name == "GATE_B")
+                    {
+                        door.Open = true;
+                        door.Locked = true;
+                    }
+                }
                 time = 180f;
                 eventRunning = true;
                 plugin.Round.RoundLock = false;
@@ -159,13 +167,12 @@ namespace FrideysEventBundle
                     List<Smod2.API.Door> doors = plugin.Server.Map.GetDoors();
                     foreach (Smod2.API.Door door in doors)
                     {
-                        if (door.Name == "GATE_A" || door.Name == "GATE_B" || door.Name == "NUKE_ARMORY" || door.Name == "LCZ_ARMORY" || door.Name == "914" || door.Name == "HCZ_ARMORY" || door.Name == "096" || door.Name == "106_BOTTOM" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "079_FIRST" || door.Name == "079_SECOND" || door.Name == "049_ARMORY" || door.Name == "012")
+                        if (door.Name == "NUKE_ARMORY" || door.Name == "LCZ_ARMORY" || door.Name == "914" || door.Name == "HCZ_ARMORY" || door.Name == "096" || door.Name == "106_BOTTOM" || door.Name == "106_PRIMARY" || door.Name == "106_SECONDARY" || door.Name == "079_FIRST" || door.Name == "079_SECOND" || door.Name == "049_ARMORY" || door.Name == "012")
                         {
                             door.Open = true;
                             door.Locked = true;
                         }
                     }
-                    plugin.Server.Map.Broadcast(10, "<color=#00ff00>GATE A and B now open, get the MICROs and kill the peanuts!</color>", false);
                     gatesOpen = true;
                 }
 
