@@ -97,7 +97,7 @@ namespace FrideysEventBundle
                 time = 180f;
                 eventRunning = true;
                 plugin.Round.RoundLock = false;
-                plugin.sendmassagediscord("**Peanutpocalypse Event started...**", "502152907509202945");
+                plugin.sendmassagediscord("__**Peanutpocalypse Event started...**__", "502152907509202945");
                 return true;
             }
             else

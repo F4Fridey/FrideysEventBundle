@@ -73,7 +73,7 @@ namespace FrideysEventBundle
                 }
                 plugin.Round.RoundLock = false;
                 eventRunning = true;
-                plugin.sendmassagediscord("**Chaos VS NTF Event started...**", "502152907509202945");
+                plugin.sendmassagediscord("__**Chaos VS NTF Event started...**__", "502152907509202945");
                 return true;
             }
             else

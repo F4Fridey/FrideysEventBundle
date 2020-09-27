@@ -109,6 +109,7 @@ namespace FrideysEventBundle
                 time = 450;
                 inbetweenTime = 30;
                 eventRunning = true;
+                plugin.sendmassagediscord("**__Deathmatch Event started...**__", "502152907509202945");
                 return true;
             }
             else if (players.Length > 10)
@@ -172,7 +173,7 @@ namespace FrideysEventBundle
                 time = 450;
                 inbetweenTime = 30;
                 eventRunning = true;
-                plugin.sendmassagediscord("**Deathmatch Event started...**", "502152907509202945");
+                plugin.sendmassagediscord("**__Deathmatch Event started...**__", "502152907509202945");
                 return true;
             }
             else

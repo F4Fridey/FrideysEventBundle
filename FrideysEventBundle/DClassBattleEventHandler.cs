@@ -100,7 +100,7 @@ namespace FrideysEventBundle
                 time = 600;
                 inbetweenTime = 180f;
                 eventRunning = true;
-                plugin.sendmassagediscord("**D Class Battle Event started...**", "502152907509202945");
+                plugin.sendmassagediscord("**__D Class Battle Event started...__**", "502152907509202945");
                 return true;
             }
             else

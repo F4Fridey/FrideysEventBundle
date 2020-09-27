@@ -113,6 +113,9 @@ namespace FrideysEventBundle
 							plugin.eventQeue.Clear();
 							return new string[] { "Event Qeue cleared." };
 					}
+				case "test":
+					plugin.sendmassagediscord("**Testing123**", "502152907509202945");
+					return new string[] { "Test sent. Did it work?" };
 			}
 		}
 	}

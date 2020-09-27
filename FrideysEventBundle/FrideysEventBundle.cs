@@ -28,6 +28,9 @@ namespace FrideysEventBundle
 		)]
 	public class FrideysEventBundle : Plugin
 	{
+		[PipeLink("karlofduty.scpdiscord", "SendStringByID")]
+		private readonly MethodPipe<bool> SendStringByID;
+
 		[ConfigOption]
 		public readonly bool enable = true;
 
@@ -57,7 +60,7 @@ namespace FrideysEventBundle
 		{
 			if (this.SendStringByID == null)
 			{
-				this.Error("SCPDiscordExtention : discord bot support is down");
+				this.Error("SCPDiscordExtention : discord bot support is down\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!Weewoh 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 			}
 			this.Info(this.Details.name + " has been loaded :)");
 		}
@@ -74,12 +77,12 @@ namespace FrideysEventBundle
 			AddEventHandlers(new TeamDeathmatchEventHandler(this));
 			AddCommand("event", new EventCommand(this));
 			AddCommand("time", new TimeCommand(this));
+
+			sendmassagediscord("**Frideys Event Bundle test...**", "502152907509202945");
 		}
 
 		//----------------- testing
 
-		[PipeLink("karlofduty.scpdiscord", "SendStringByID")]
-		private readonly MethodPipe<bool> SendStringByID;
 
 		public void sendmassagediscord(string msg, string key)
 		{
