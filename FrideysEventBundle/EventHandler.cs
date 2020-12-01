@@ -77,8 +77,6 @@ namespace FrideysEventBundle
 		public void OnRoundRestart(RoundRestartEvent ev)//remove current event from the qeue
 		{
 			warheadDetonated = false;
-			timer = -1f;
-			announcementStage = 0;
 			List<string> teamkillers = new List<string>();
 			bool delete;
 			plugin.roundState = 0;
@@ -132,7 +130,6 @@ namespace FrideysEventBundle
 		public void OnRoundStart(RoundStartEvent ev)
 		{
 			plugin.roundState = 1;
-			timer = 0f;
 		}
 
 		public void OnRoundEnd(RoundEndEvent ev)
@@ -140,43 +137,8 @@ namespace FrideysEventBundle
 			endTime = true;
 		}
 
-		float timer = 0f;
-		int announcementStage = 0;
-
 		public void OnFixedUpdate(FixedUpdateEvent ev)
 		{
-			bool isEmpty = !plugin.eventQeue.Any();
-			if ((isEmpty || plugin.eventQeue[0] == "noevent") && !warheadDetonated)
-			{
-				if (!(timer < 0) && timer < plugin.timeToPowerOuttage)
-				{
-					timer += Time.deltaTime;
-				}else if (timer >= plugin.timeToPowerOuttage)
-				{
-					timer = -1f;
-					plugin.Server.Map.OverchargeLights(500, false);
-					
-				}
-				if (timer > (plugin.timeToPowerOuttage - 180f) && announcementStage == 0)
-				{
-					announcementStage++;
-					plugin.Server.Map.AnnounceCustomMessage("danger . power system failure detected . please evacuate the facility . power failure in t minus 3 minutes .", true, true);
-					plugin.Server.Map.OverchargeLights(5, false);
-				}else if ((timer > (plugin.timeToPowerOuttage - 150f) && announcementStage == 1) || (timer > (plugin.timeToPowerOuttage - 120f) && announcementStage == 2) || (timer > (plugin.timeToPowerOuttage - 90f) && announcementStage == 3) || (timer > (plugin.timeToPowerOuttage - 60f) && announcementStage == 4) || (timer > (plugin.timeToPowerOuttage - 30f) && announcementStage == 5))
-				{
-					announcementStage++;
-					plugin.Server.Map.OverchargeLights(5, false);
-				}else if ((timer > (plugin.timeToPowerOuttage - 20f) && announcementStage == 6) || (timer > (plugin.timeToPowerOuttage - 10f) && announcementStage == 7))
-				{
-					announcementStage++;
-					plugin.Server.Map.OverchargeLights(2, false);
-				}else if (timer > (plugin.timeToPowerOuttage - 5f) && announcementStage == 8)
-				{
-					announcementStage++;
-					plugin.Server.Map.OverchargeLights(2, false);
-					plugin.Server.Map.AnnounceCustomMessage("danger . power system failure .g6 . .g4 .g2 . .g1", true, true);
-				}
-			}
 
 			if (plugin.roundState == 1)
 			{
